@@ -1,0 +1,70 @@
+{
+  "opponents": [
+    {
+      "id": "thunder_knight",
+      "name": "雷霆骑士",
+      "strategy": "aggressive",
+      "riskTolerance": 0.8,
+      "adaptability": 0.5,
+      "consistency": 0.6,
+      "preferredActions": ["sprint", "overtake", "burst_sprint", "gale_step"],
+      "avoidedActions": ["rest", "follow"],
+      "taunts": ["追上我啊！", "太慢了！", "我已经看不到你了！"],
+      "horsePreference": "speed"
+    },
+    {
+      "id": "shadow_rider",
+      "name": "暗影骑手",
+      "strategy": "opportunist",
+      "riskTolerance": 0.6,
+      "adaptability": 0.9,
+      "consistency": 0.5,
+      "preferredActions": ["follow", "energy_drain", "cruise"],
+      "avoidedActions": ["burst_sprint"],
+      "taunts": ["...", "你以为领先就赢了？", "一切尽在掌握"],
+      "horsePreference": "balanced"
+    },
+    {
+      "id": "iron_guardian",
+      "name": "钢铁壁垒",
+      "strategy": "defensive",
+      "riskTolerance": 0.2,
+      "adaptability": 0.4,
+      "consistency": 0.9,
+      "preferredActions": ["cruise", "iron_wall", "block"],
+      "avoidedActions": ["burst_sprint", "overtake"],
+      "taunts": ["休想超过我", "这里是终点", "稳如磐石"],
+      "horsePreference": "stamina"
+    },
+    {
+      "id": "wind_chaser",
+      "name": "追风者",
+      "strategy": "steady",
+      "riskTolerance": 0.5,
+      "adaptability": 0.7,
+      "consistency": 0.8,
+      "preferredActions": ["cruise", "gale_step", "double_jump"],
+      "avoidedActions": ["block"],
+      "taunts": ["保持节奏", "风与我同在", "稳步前进"],
+      "horsePreference": "agility"
+    },
+    {
+      "id": "chaos_rider",
+      "name": "混沌骑士",
+      "strategy": "chaotic",
+      "riskTolerance": 0.9,
+      "adaptability": 0.3,
+      "consistency": 0.2,
+      "preferredActions": ["burst_sprint", "trip_wire", "overtake"],
+      "avoidedActions": [],
+      "taunts": ["哈哈哈！", "谁知道会发生什么！", "混乱即是秩序！"],
+      "horsePreference": "speed"
+    }
+  ],
+  "difficultyScaling": {
+    "easy": { "statMultiplier": 0.7, "reactionDelay": 0.5, "mistakeRate": 0.3 },
+    "normal": { "statMultiplier": 1.0, "reactionDelay": 0.2, "mistakeRate": 0.1 },
+    "hard": { "statMultiplier": 1.2, "reactionDelay": 0.1, "mistakeRate": 0.05 },
+    "expert": { "statMultiplier": 1.4, "reactionDelay": 0.05, "mistakeRate": 0.02 }
+  }
+}

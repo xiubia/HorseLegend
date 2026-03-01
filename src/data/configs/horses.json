@@ -1,0 +1,89 @@
+{
+  "horses": [
+    {
+      "id": "starter_horse",
+      "name": "初心驹",
+      "rarity": "common",
+      "baseStats": {
+        "speed": 20,
+        "stamina": 20,
+        "acceleration": 20,
+        "agility": 20
+      },
+      "appearance": {
+        "bodyColor": "#8B4513",
+        "maneColor": "#4A2500"
+      }
+    },
+    {
+      "id": "swift_wind",
+      "name": "疾风",
+      "rarity": "rare",
+      "baseStats": {
+        "speed": 45,
+        "stamina": 25,
+        "acceleration": 40,
+        "agility": 30
+      },
+      "appearance": {
+        "bodyColor": "#D2691E",
+        "maneColor": "#FFD700"
+      },
+      "specialAbility": "wind_boost"
+    },
+    {
+      "id": "iron_hoof",
+      "name": "铁蹄",
+      "rarity": "rare",
+      "baseStats": {
+        "speed": 30,
+        "stamina": 50,
+        "acceleration": 25,
+        "agility": 35
+      },
+      "appearance": {
+        "bodyColor": "#2F4F4F",
+        "maneColor": "#696969"
+      },
+      "specialAbility": "endurance"
+    },
+    {
+      "id": "shadow_dancer",
+      "name": "暗影舞者",
+      "rarity": "epic",
+      "baseStats": {
+        "speed": 55,
+        "stamina": 40,
+        "acceleration": 50,
+        "agility": 55
+      },
+      "appearance": {
+        "bodyColor": "#1a1a2e",
+        "maneColor": "#4a0080"
+      },
+      "specialAbility": "shadow_step"
+    },
+    {
+      "id": "thunder_lord",
+      "name": "雷霆之主",
+      "rarity": "legendary",
+      "baseStats": {
+        "speed": 70,
+        "stamina": 60,
+        "acceleration": 65,
+        "agility": 55
+      },
+      "appearance": {
+        "bodyColor": "#FFD700",
+        "maneColor": "#FF4500"
+      },
+      "specialAbility": "thunder_charge"
+    }
+  ],
+  "rarityConfig": {
+    "common": { "baseStatTotal": 80, "growthBonus": 1.0, "dropRate": 0.6 },
+    "rare": { "baseStatTotal": 140, "growthBonus": 1.1, "dropRate": 0.25 },
+    "epic": { "baseStatTotal": 200, "growthBonus": 1.25, "dropRate": 0.12 },
+    "legendary": { "baseStatTotal": 250, "growthBonus": 1.5, "dropRate": 0.03 }
+  }
+}

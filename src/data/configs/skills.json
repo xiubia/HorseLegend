@@ -1,0 +1,99 @@
+{
+  "skills": [
+    {
+      "id": "gale_step",
+      "name": "疾风步",
+      "category": "movement",
+      "description": "化身疾风，速度大幅提升，但结束后会短暂减速",
+      "staminaCost": 25,
+      "cooldown": 15,
+      "effects": [
+        { "type": "speed_boost", "target": "self", "value": 0.5, "duration": 3 },
+        { "type": "speed_reduction", "target": "self", "value": 0.3, "duration": 2, "delay": 3 }
+      ],
+      "aiPriority": 0.7,
+      "unlockLevel": 1
+    },
+    {
+      "id": "burst_sprint",
+      "name": "爆发冲刺",
+      "category": "movement",
+      "description": "极限爆发，获得惊人速度，但消耗巨大",
+      "staminaCost": 50,
+      "cooldown": 30,
+      "effects": [
+        { "type": "speed_boost", "target": "self", "value": 1.0, "duration": 2 },
+        { "type": "stamina_damage", "target": "self", "value": 20, "delay": 2 }
+      ],
+      "aiPriority": 0.4,
+      "unlockLevel": 20
+    },
+    {
+      "id": "double_jump",
+      "name": "二段跳",
+      "category": "movement",
+      "description": "跃起跳过障碍物",
+      "staminaCost": 20,
+      "cooldown": 10,
+      "effects": [
+        { "type": "displacement", "target": "self", "value": 15, "duration": 1 },
+        { "type": "immunity", "target": "self", "value": 1, "duration": 1 }
+      ],
+      "aiPriority": 0.8,
+      "unlockLevel": 1
+    },
+    {
+      "id": "iron_wall",
+      "name": "铁壁",
+      "category": "defense",
+      "description": "坚不可摧的防御姿态，免疫所有控制效果",
+      "staminaCost": 20,
+      "cooldown": 20,
+      "effects": [
+        { "type": "immunity", "target": "self", "value": 1, "duration": 5 },
+        { "type": "speed_reduction", "target": "self", "value": 0.2, "duration": 5 }
+      ],
+      "aiPriority": 0.6,
+      "unlockLevel": 5
+    },
+    {
+      "id": "trip_wire",
+      "name": "绊马索",
+      "category": "control",
+      "description": "向后方抛出绊马索，减速追击的对手",
+      "staminaCost": 30,
+      "cooldown": 20,
+      "effects": [
+        { "type": "speed_reduction", "target": "opponent", "value": 0.5, "duration": 2 },
+        { "type": "stamina_damage", "target": "opponent", "value": 15 }
+      ],
+      "aiPriority": 0.7,
+      "unlockLevel": 10
+    },
+    {
+      "id": "energy_drain",
+      "name": "能量汲取",
+      "category": "utility",
+      "description": "窃取对手体力为己用",
+      "staminaCost": 15,
+      "cooldown": 25,
+      "effects": [
+        { "type": "stamina_damage", "target": "opponent", "value": 30 },
+        { "type": "stamina_heal", "target": "self", "value": 30 }
+      ],
+      "aiPriority": 0.6,
+      "unlockLevel": 25
+    }
+  ],
+  "counterRelations": [
+    { "skill": "gale_step", "counters": ["energy_drain"], "counteredBy": ["trip_wire"], "counterBonus": 0.5 },
+    { "skill": "trip_wire", "counters": ["gale_step", "burst_sprint"], "counteredBy": ["iron_wall", "double_jump"], "counterBonus": 0.5 },
+    { "skill": "iron_wall", "counters": ["trip_wire"], "counteredBy": ["energy_drain"], "counterBonus": 0.5 },
+    { "skill": "energy_drain", "counters": ["iron_wall"], "counteredBy": ["gale_step"], "counterBonus": 0.3 }
+  ],
+  "deckPresets": [
+    { "name": "速度流", "skills": ["gale_step", "burst_sprint", "double_jump"] },
+    { "name": "控制流", "skills": ["trip_wire", "iron_wall", "energy_drain"] },
+    { "name": "平衡流", "skills": ["gale_step", "iron_wall", "double_jump"] }
+  ]
+}
