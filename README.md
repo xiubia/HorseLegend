@@ -1,13 +1,15 @@
-# 3D AI Game Template
+# HorseLegend - AI 驱动的 3D 赛马游戏
 
-> An AI-native 3D browser game template powered by Three.js + TypeScript + Vite
+> 一款融合 AI 动态内容生成的 3D 赛马养成游戏，基于 Three.js + TypeScript + Vite 构建
+
+🎮 **[立即游玩](https://xiubia.github.io/HorseLegend/)** | 📖 [技术文档](docs/ARCHITECTURE.md) | 🤖 [AI 框架](docs/AI_NATIVE_FRAMEWORK.md)
 
 ---
 
 ## ✨ 项目简介
 
-这是一个完整的、可直接运行的 **AI 原生 3D 赛马游戏**模板。
-区别于传统游戏模板，本项目将 **大语言模型（LLM）深度集成到游戏核心玩法**中：
+HorseLegend 是一款完整的、可直接游玩的 **AI 原生 3D 赛马养成游戏**。
+区别于传统游戏，本项目将 **大语言模型（LLM）深度集成到游戏核心玩法**中：
 
 - 🤖 **AI 实时生成关卡** — Gemini/DeepSeek 在线生成跑酷赛道（ASCII → 3D）
 - 🏇 **AI 控制对手** — GeminiRacer 驱动的 AI 赛手，有性格、有记忆
@@ -51,18 +53,26 @@
 
 ## 🚀 快速开始
 
-### 环境要求
+### 在线游玩
+
+🎮 **直接访问：[https://xiubia.github.io/HorseLegend/](https://xiubia.github.io/HorseLegend/)**
+
+无需安装，打开浏览器即可游玩！
+
+### 本地开发
+
+#### 环境要求
 
 - Node.js >= 18
 - 现代浏览器（支持 WebGL 2.0）
 - （可选）Gemini API Key，用于 AI 关卡生成
 
-### 安装与运行
+#### 安装与运行
 
 ```bash
 # 克隆仓库
-git clone https://github.com/YOUR_USERNAME/3d-game-template.git
-cd 3d-game-template
+git clone https://github.com/xiubia/HorseLegend.git
+cd HorseLegend
 
 # 安装依赖
 npm install
@@ -81,12 +91,14 @@ npm run preview
 
 游戏右上角 ⚙ 设置面板中，填入你的 LLM API Key（支持 Gemini / DeepSeek / 腾讯混元）即可启用 AI 关卡生成和 AI 对手。
 
+> 💡 提示：即使不配置 API Key，游戏的基础玩法（限时竞速、训练、坐骑系统等）仍可正常游玩。
+
 ---
 
 ## 📁 项目结构
 
 ```
-3d-game-template/
+HorseLegend/
 ├── index.html                  # 入口 HTML
 ├── package.json
 ├── tsconfig.json
