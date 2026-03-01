@@ -2302,8 +2302,7 @@ export class StableScene implements GameScene {
     const dx = Math.abs(playerPos.x - eggPos.x);
     const dz = Math.abs(playerPos.z - eggPos.z);
 
-    // 增大触发范围到 5 单位，让玩家更容易触发
-    const inRange = dx < 5 && dz < 5;
+    const inRange = dx < 3 && dz < 3;
 
     if (inRange) {
       if (!this.petEggTriggered) {
