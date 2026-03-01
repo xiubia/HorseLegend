@@ -318,5 +318,3 @@ EventBus.on('race:finished', ({ trophies }) => {
 | [AGENTS.md](AGENTS.md) | AI Agent 开发规范 |
 
 ## 📄 License
-
-本项目基于 [MIT License](LICENSE) 协议开源发布。
