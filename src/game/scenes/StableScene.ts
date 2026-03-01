@@ -144,6 +144,8 @@ export class StableScene implements GameScene {
    */
   onEnter(engine: Engine): void {
     this.engine = engine;
+    // 重置宠物蛋触发标志
+    this.petEggTriggered = false;
   }
 
   onExit(): void {
@@ -2300,12 +2302,16 @@ export class StableScene implements GameScene {
     const dx = Math.abs(playerPos.x - eggPos.x);
     const dz = Math.abs(playerPos.z - eggPos.z);
 
-    const inRange = dx < 3 && dz < 3;
+    // 增大触发范围到 5 单位，让玩家更容易触发
+    const inRange = dx < 5 && dz < 5;
 
-    if (inRange && !this.petEggTriggered) {
-      this.petEggTriggered = true;
-      this.openPetGachaUI();
-    } else if (!inRange) {
+    if (inRange) {
+      if (!this.petEggTriggered) {
+        this.petEggTriggered = true;
+        this.openPetGachaUI();
+      }
+    } else {
+      // 离开范围后重置，允许再次触发
       this.petEggTriggered = false;
     }
   }

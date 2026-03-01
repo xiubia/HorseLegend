@@ -106,8 +106,13 @@ export class Pet extends Entity {
 
     private addEyes(g: THREE.Group | THREE.Object3D, eM: THREE.Material, wM: THREE.Material, sp: number, ey: number, ez: number, r: number): void {
         for (const s of [-1, 1]) {
-            g.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(r * 1.5, 8, 8), wM), { position: new THREE.Vector3(s * sp, ey, ez) }))
-            g.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(r, 6, 6), eM), { position: new THREE.Vector3(s * sp, ey, ez + r * 0.8) }))
+            const whitePart = new THREE.Mesh(new THREE.SphereGeometry(r * 1.5, 8, 8), wM);
+            whitePart.position.set(s * sp, ey, ez);
+            g.add(whitePart);
+            
+            const pupil = new THREE.Mesh(new THREE.SphereGeometry(r, 6, 6), eM);
+            pupil.position.set(s * sp, ey, ez + r * 0.8);
+            g.add(pupil);
         }
     }
 
@@ -125,7 +130,9 @@ export class Pet extends Entity {
     private buildPuppy(g: THREE.Group | THREE.Object3D, b: THREE.Material, a: THREE.Material, e: THREE.Material, w: THREE.Material): void {
         const body = new THREE.Mesh(new THREE.SphereGeometry(0.5, 12, 10), b); body.scale.set(1, 0.8, 1.2); body.position.y = 0.4; g.add(body)
         const head = new THREE.Mesh(new THREE.SphereGeometry(0.4, 12, 10), b); head.position.set(0, 0.9, 0.4); g.add(head)
-        g.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), a), { position: new THREE.Vector3(0, 0.85, 0.78) }))
+        const nose = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), a);
+        nose.position.set(0, 0.85, 0.78);
+        g.add(nose);
         this.addEyes(g, e, w, 0.15, 0.95, 0.7, 0.06)
         for (const x of [-0.2, 0.2]) { const ear = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.25, 4), a); ear.position.set(x, 1.25, 0.35); ear.rotation.z = x < 0 ? 0.3 : -0.3; g.add(ear) }
         this.addLegs(g, b, 0.08, 0.25, 0.25, 0.35)
@@ -143,7 +150,11 @@ export class Pet extends Entity {
         const body = new THREE.Mesh(new THREE.SphereGeometry(0.55, 12, 10), b); body.scale.set(1, 0.9, 0.9); body.position.y = 0.4; g.add(body)
         const head = new THREE.Mesh(new THREE.SphereGeometry(0.42, 12, 10), b); head.position.set(0, 0.95, 0.3); g.add(head)
         this.addEyes(g, e, w, 0.16, 0.98, 0.62, 0.06)
-        for (const x of [-0.35, 0.35]) { g.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 8), a), { position: new THREE.Vector3(x, 1.2, 0.25) })) }
+        for (const x of [-0.35, 0.35]) {
+            const ear = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 8), a);
+            ear.position.set(x, 1.2, 0.25);
+            g.add(ear);
+        }
         this.addLegs(g, b, 0.1, 0.18, 0.25, 0.3)
     }
 
@@ -151,7 +162,11 @@ export class Pet extends Entity {
         const body = new THREE.Mesh(new THREE.SphereGeometry(0.45, 12, 10), b); body.scale.set(0.9, 0.8, 1.3); body.position.y = 0.4; g.add(body)
         const head = new THREE.Mesh(new THREE.SphereGeometry(0.35, 12, 10), b); head.scale.set(1, 1, 1.2); head.position.set(0, 0.85, 0.45); g.add(head)
         this.addEyes(g, e, w, 0.13, 0.9, 0.7, 0.055)
-        for (const x of [-0.18, 0.18]) { g.add(Object.assign(new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.35, 4), b), { position: new THREE.Vector3(x, 1.25, 0.35) })) }
+        for (const x of [-0.18, 0.18]) {
+            const ear = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.35, 4), b);
+            ear.position.set(x, 1.25, 0.35);
+            g.add(ear);
+        }
         const tail = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8), b); tail.scale.set(0.6, 0.6, 1.5); tail.position.set(0, 0.35, -0.7); g.add(tail)
         this.addLegs(g, b, 0.06, 0.25, 0.2, 0.35)
     }
@@ -170,8 +185,13 @@ export class Pet extends Entity {
         const head = new THREE.Mesh(new THREE.SphereGeometry(0.35, 12, 10), b); head.position.set(0, 1, 0.15); g.add(head)
         const eyeGold = new THREE.MeshToonMaterial({ color: 0xFFD700 })
         for (const s of [-1, 1]) {
-            g.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), eyeGold), { position: new THREE.Vector3(s * 0.12, 1, 0.4) }))
-            g.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 6), e), { position: new THREE.Vector3(s * 0.12, 1, 0.48) }))
+            const eyeWhite = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), eyeGold);
+            eyeWhite.position.set(s * 0.12, 1, 0.4);
+            g.add(eyeWhite);
+            
+            const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 6), e);
+            pupil.position.set(s * 0.12, 1, 0.48);
+            g.add(pupil);
         }
         for (const s of [-1, 1]) { const horn = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.2, 4), a); horn.position.set(s * 0.2, 1.3, 0.1); horn.rotation.z = s * 0.2; g.add(horn) }
     }
@@ -181,7 +201,9 @@ export class Pet extends Entity {
         const head = new THREE.Mesh(new THREE.SphereGeometry(0.35, 12, 10), b); head.position.set(0, 0.9, 0.25); g.add(head)
         this.addEyes(g, e, w, 0.14, 0.95, 0.52, 0.07)
         for (const s of [-1, 1]) { const ear = new THREE.Mesh(new THREE.CapsuleGeometry(0.08, 0.5, 4, 8), b); ear.position.set(s * 0.15, 1.45, 0.15); ear.rotation.z = s * 0.15; g.add(ear) }
-        g.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 6), w), { position: new THREE.Vector3(0, 0.3, -0.45) }))
+        const tail = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 6), w);
+        tail.position.set(0, 0.3, -0.45);
+        g.add(tail);
         this.addLegs(g, b, 0.08, 0.18, 0.2, 0.25)
     }
 
@@ -190,7 +212,12 @@ export class Pet extends Entity {
         const head = new THREE.Mesh(new THREE.SphereGeometry(0.32, 12, 10), b); head.scale.set(1, 1, 1.15); head.position.set(0, 0.9, 0.45); g.add(head)
         const eyeYellow = new THREE.MeshToonMaterial({ color: 0xFFFF00 })
         this.addEyes(g, e, eyeYellow, 0.14, 0.95, 0.68, 0.055)
-        for (const s of [-1, 1]) { g.add(Object.assign(new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.25, 5), a), { position: new THREE.Vector3(s * 0.15, 1.2, 0.35), rotation: new THREE.Euler(0, 0, s * 0.3) })) }
+        for (const s of [-1, 1]) {
+            const horn = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.25, 5), a);
+            horn.position.set(s * 0.15, 1.2, 0.35);
+            horn.rotation.set(0, 0, s * 0.3);
+            g.add(horn);
+        }
         for (const s of [-1, 1]) { const wing = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.35, 3), a); wing.position.set(s * 0.45, 0.7, 0); wing.rotation.set(0, s * 0.3, s * (Math.PI / 2 + 0.3)); g.add(wing) }
         this.addLegs(g, b, 0.08, 0.22, 0.22, 0.35)
     }
