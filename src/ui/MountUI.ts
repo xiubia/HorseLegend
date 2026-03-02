@@ -82,10 +82,16 @@ export class MountUI {
   // ============ UI 构建 ============
 
   private createPanel(): HTMLDivElement {
+    // 检测移动设备
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
     const panel = document.createElement('div');
     panel.style.cssText = `
       background: #FFF9E6; color: #333; border-radius: 20px;
-      padding: 20px 24px; width: 720px; max-width: 95vw; max-height: 85vh;
+      padding: ${isMobile ? '12px 16px' : '20px 24px'}; 
+      width: ${isMobile ? '95vw' : '720px'}; 
+      max-width: 95vw; 
+      max-height: 85vh;
       border: 4px solid #000; box-shadow: 0 8px 0 #000;
       font-family: ${FONT}; display: flex; flex-direction: column;
       overflow: hidden;
@@ -136,17 +142,22 @@ export class MountUI {
   }
 
   private createLeftGrid(): HTMLDivElement {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
     const left = document.createElement('div');
     left.id = 'mount-grid-container';
     left.style.cssText = `
-      flex: 0 0 340px; overflow-y: auto; overflow-x: hidden;
+      flex: ${isMobile ? '1' : '0 0 340px'}; 
+      overflow-y: auto; 
+      overflow-x: hidden;
       padding-right: 8px;
     `;
 
     const grid = document.createElement('div');
     grid.style.cssText = `
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      display: grid; 
+      grid-template-columns: repeat(${isMobile ? '2' : '3'}, 1fr);
+      gap: ${isMobile ? '8px' : '10px'};
     `;
 
     const progress = getPlayerProgress();
@@ -446,7 +457,8 @@ export class MountUI {
     this.previewRenderer.setSize(w, h);
     this.previewRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     canvasWrap.appendChild(this.previewRenderer.domElement);
-    this.previewRenderer.domElement.style.cssText = 'width:100%; height:100%; display:block;';
+    // 修复：保持正确的宽高比，不拉伸
+    this.previewRenderer.domElement.style.cssText = 'width:100%; height:100%; display:block; object-fit: contain;';
 
     // 地面圆盘
     const floorGeo = new THREE.CylinderGeometry(2, 2, 0.1, 32);

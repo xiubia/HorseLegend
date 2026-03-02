@@ -94,18 +94,24 @@ export class HUD {
    */
   private createBaseUI(): void {
     const fontStack = '"Arial Rounded MT Bold", "Verdana", sans-serif';
+    
+    // 检测是否为移动设备
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const scale = isMobile ? 0.7 : 1; // 移动端缩小到 70%
 
     // 状态面板（左侧竖排）
     this.statusPanel = document.createElement('div');
     this.statusPanel.id = 'hud-status';
     this.statusPanel.style.cssText = `
       position: fixed;
-      top: 20px;
-      left: 20px;
+      top: ${isMobile ? '10px' : '20px'};
+      left: ${isMobile ? '10px' : '20px'};
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: ${isMobile ? '8px' : '15px'};
       z-index: 1000;
+      transform: scale(${scale});
+      transform-origin: top left;
     `;
     this.container.appendChild(this.statusPanel);
 

@@ -402,18 +402,18 @@ export class StableScene implements GameScene {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     if (!isMobile) return;
 
-    // 创建摇杆底座
+    // 创建摇杆底座 - 调整位置避开底部按钮
     this.joystickBase = document.createElement('div');
     this.joystickBase.style.cssText = `
       position: fixed;
-      left: 30px;
-      bottom: 30px;
-      width: 120px;
-      height: 120px;
+      left: 20px;
+      bottom: 120px;
+      width: 100px;
+      height: 100px;
       background: rgba(255, 255, 255, 0.3);
       border: 3px solid rgba(255, 255, 255, 0.5);
       border-radius: 50%;
-      z-index: 1000;
+      z-index: 2000;
       touch-action: none;
     `;
 
@@ -424,8 +424,8 @@ export class StableScene implements GameScene {
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      width: 50px;
-      height: 50px;
+      width: 40px;
+      height: 40px;
       background: rgba(255, 255, 255, 0.7);
       border: 3px solid rgba(255, 255, 255, 0.9);
       border-radius: 50%;
@@ -522,17 +522,17 @@ export class StableScene implements GameScene {
     this.fullscreenBtn.innerHTML = '⛶';
     this.fullscreenBtn.style.cssText = `
       position: fixed;
-      top: 20px;
+      top: 80px;
       right: 20px;
-      width: 50px;
-      height: 50px;
+      width: 44px;
+      height: 44px;
       background: rgba(0, 0, 0, 0.5);
       color: white;
       border: 2px solid rgba(255, 255, 255, 0.5);
       border-radius: 8px;
-      font-size: 24px;
+      font-size: 20px;
       cursor: pointer;
-      z-index: 1000;
+      z-index: 2000;
       display: flex;
       align-items: center;
       justify-content: center;
