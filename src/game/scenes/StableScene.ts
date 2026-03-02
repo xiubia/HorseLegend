@@ -121,11 +121,33 @@ export class StableScene implements GameScene {
   private lastMouseX: number = 0;
   private lastMouseY: number = 0;
 
+  // 触控支持
+  private touchStartX: number = 0;
+  private touchStartY: number = 0;
+  private isTouching: boolean = false;
+  private touchId: number | null = null;
+
+  // 虚拟摇杆
+  private joystickBase: HTMLDivElement | null = null;
+  private joystickStick: HTMLDivElement | null = null;
+  private joystickActive: boolean = false;
+  private joystickTouchId: number | null = null;
+  private joystickInputX: number = 0;
+  private joystickInputZ: number = 0;
+
+  // 全屏按钮
+  private fullscreenBtn: HTMLButtonElement | null = null;
+
   // 鼠标事件绑定
   private boundOnMouseDown: (e: MouseEvent) => void;
   private boundOnMouseUp: (e: MouseEvent) => void;
   private boundOnMouseMove: (e: MouseEvent) => void;
   private boundOnWheel: (e: WheelEvent) => void;
+
+  // 触控事件绑定
+  private boundOnTouchStart: (e: TouchEvent) => void;
+  private boundOnTouchMove: (e: TouchEvent) => void;
+  private boundOnTouchEnd: (e: TouchEvent) => void;
 
   constructor(engine: Engine, hud: HUD, callbacks: StableSceneCallbacks) {
     this.engine = engine;
@@ -137,6 +159,11 @@ export class StableScene implements GameScene {
     this.boundOnMouseUp = this.onMouseUp.bind(this);
     this.boundOnMouseMove = this.onMouseMove.bind(this);
     this.boundOnWheel = this.onWheel.bind(this);
+
+    // 绑定触控事件
+    this.boundOnTouchStart = this.onTouchStart.bind(this);
+    this.boundOnTouchMove = this.onTouchMove.bind(this);
+    this.boundOnTouchEnd = this.onTouchEnd.bind(this);
   }
 
   /**
@@ -212,6 +239,18 @@ export class StableScene implements GameScene {
     canvas.addEventListener('mouseleave', this.boundOnMouseUp);
     canvas.addEventListener('mousemove', this.boundOnMouseMove);
     canvas.addEventListener('wheel', this.boundOnWheel);
+
+    // 添加触控事件
+    canvas.addEventListener('touchstart', this.boundOnTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', this.boundOnTouchMove, { passive: false });
+    canvas.addEventListener('touchend', this.boundOnTouchEnd);
+    canvas.addEventListener('touchcancel', this.boundOnTouchEnd);
+
+    // 创建虚拟摇杆（仅移动端显示）
+    this.createVirtualJoystick();
+
+    // 创建全屏按钮
+    this.createFullscreenButton();
   }
 
   /**
@@ -224,6 +263,25 @@ export class StableScene implements GameScene {
     canvas.removeEventListener('mouseleave', this.boundOnMouseUp);
     canvas.removeEventListener('mousemove', this.boundOnMouseMove);
     canvas.removeEventListener('wheel', this.boundOnWheel);
+
+    // 移除触控事件
+    canvas.removeEventListener('touchstart', this.boundOnTouchStart);
+    canvas.removeEventListener('touchmove', this.boundOnTouchMove);
+    canvas.removeEventListener('touchend', this.boundOnTouchEnd);
+    canvas.removeEventListener('touchcancel', this.boundOnTouchEnd);
+
+    // 移除虚拟摇杆
+    if (this.joystickBase) {
+      this.joystickBase.remove();
+      this.joystickBase = null;
+      this.joystickStick = null;
+    }
+
+    // 移除全屏按钮
+    if (this.fullscreenBtn) {
+      this.fullscreenBtn.remove();
+      this.fullscreenBtn = null;
+    }
   }
 
   /**
@@ -268,6 +326,239 @@ export class StableScene implements GameScene {
   private onWheel(e: WheelEvent): void {
     this.cameraDistance += e.deltaY * 0.02;
     this.cameraDistance = Math.max(5, Math.min(25, this.cameraDistance));
+  }
+
+  /**
+   * 触摸开始
+   */
+  private onTouchStart(e: TouchEvent): void {
+    // 阻止默认行为（防止页面滚动）
+    e.preventDefault();
+
+    // 只处理第一个触摸点用于相机旋转
+    if (this.touchId === null && e.touches.length > 0) {
+      const touch = e.touches[0];
+      this.touchId = touch.identifier;
+      this.isTouching = true;
+      this.touchStartX = touch.clientX;
+      this.touchStartY = touch.clientY;
+    }
+  }
+
+  /**
+   * 触摸移动
+   */
+  private onTouchMove(e: TouchEvent): void {
+    e.preventDefault();
+
+    if (!this.isTouching || this.touchId === null) return;
+
+    // 找到对应的触摸点
+    for (let i = 0; i < e.touches.length; i++) {
+      const touch = e.touches[i];
+      if (touch.identifier === this.touchId) {
+        const deltaX = touch.clientX - this.touchStartX;
+        const deltaY = touch.clientY - this.touchStartY;
+
+        // 水平旋转
+        this.cameraAngleY -= deltaX * 0.01;
+
+        // 垂直旋转（限制角度）
+        this.cameraAngleX += deltaY * 0.01;
+        this.cameraAngleX = Math.max(0.1, Math.min(1.2, this.cameraAngleX));
+
+        this.touchStartX = touch.clientX;
+        this.touchStartY = touch.clientY;
+        break;
+      }
+    }
+  }
+
+  /**
+   * 触摸结束
+   */
+  private onTouchEnd(e: TouchEvent): void {
+    // 检查是否是我们跟踪的触摸点结束了
+    if (this.touchId !== null) {
+      let found = false;
+      for (let i = 0; i < e.touches.length; i++) {
+        if (e.touches[i].identifier === this.touchId) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        this.isTouching = false;
+        this.touchId = null;
+      }
+    }
+  }
+
+  /**
+   * 创建虚拟摇杆
+   */
+  private createVirtualJoystick(): void {
+    // 检测是否为移动设备
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (!isMobile) return;
+
+    // 创建摇杆底座
+    this.joystickBase = document.createElement('div');
+    this.joystickBase.style.cssText = `
+      position: fixed;
+      left: 30px;
+      bottom: 30px;
+      width: 120px;
+      height: 120px;
+      background: rgba(255, 255, 255, 0.3);
+      border: 3px solid rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      z-index: 1000;
+      touch-action: none;
+    `;
+
+    // 创建摇杆手柄
+    this.joystickStick = document.createElement('div');
+    this.joystickStick.style.cssText = `
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 3px solid rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      transition: all 0.1s;
+    `;
+
+    this.joystickBase.appendChild(this.joystickStick);
+    document.body.appendChild(this.joystickBase);
+
+    // 摇杆触控事件
+    this.joystickBase.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.touches.length > 0) {
+        this.joystickActive = true;
+        this.joystickTouchId = e.touches[0].identifier;
+        this.updateJoystick(e.touches[0]);
+      }
+    });
+
+    this.joystickBase.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!this.joystickActive || this.joystickTouchId === null) return;
+
+      for (let i = 0; i < e.touches.length; i++) {
+        if (e.touches[i].identifier === this.joystickTouchId) {
+          this.updateJoystick(e.touches[i]);
+          break;
+        }
+      }
+    });
+
+    const endJoystick = (e: TouchEvent) => {
+      if (this.joystickTouchId !== null) {
+        let found = false;
+        for (let i = 0; i < e.touches.length; i++) {
+          if (e.touches[i].identifier === this.joystickTouchId) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          this.joystickActive = false;
+          this.joystickTouchId = null;
+          this.joystickInputX = 0;
+          this.joystickInputZ = 0;
+          if (this.joystickStick) {
+            this.joystickStick.style.transform = 'translate(-50%, -50%)';
+          }
+        }
+      }
+    };
+
+    this.joystickBase.addEventListener('touchend', endJoystick);
+    this.joystickBase.addEventListener('touchcancel', endJoystick);
+  }
+
+  /**
+   * 更新摇杆位置
+   */
+  private updateJoystick(touch: Touch): void {
+    if (!this.joystickBase || !this.joystickStick) return;
+
+    const rect = this.joystickBase.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    let deltaX = touch.clientX - centerX;
+    let deltaY = touch.clientY - centerY;
+
+    // 限制在圆形范围内
+    const maxDistance = 35; // 最大偏移距离
+    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+    if (distance > maxDistance) {
+      deltaX = (deltaX / distance) * maxDistance;
+      deltaY = (deltaY / distance) * maxDistance;
+    }
+
+    // 更新手柄位置
+    this.joystickStick.style.transform = `translate(calc(-50% + ${deltaX}px), calc(-50% + ${deltaY}px))`;
+
+    // 计算输入值 (-1 到 1)
+    this.joystickInputX = deltaX / maxDistance;
+    this.joystickInputZ = deltaY / maxDistance;
+  }
+
+  /**
+   * 创建全屏按钮
+   */
+  private createFullscreenButton(): void {
+    this.fullscreenBtn = document.createElement('button');
+    this.fullscreenBtn.innerHTML = '⛶';
+    this.fullscreenBtn.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      border-radius: 8px;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    `;
+
+    this.fullscreenBtn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.log('无法进入全屏:', err);
+        });
+        this.fullscreenBtn!.innerHTML = '⛶';
+      } else {
+        document.exitFullscreen();
+        this.fullscreenBtn!.innerHTML = '⛶';
+      }
+    });
+
+    // 监听全屏状态变化
+    document.addEventListener('fullscreenchange', () => {
+      if (this.fullscreenBtn) {
+        this.fullscreenBtn.innerHTML = document.fullscreenElement ? '⛶' : '⛶';
+      }
+    });
+
+    document.body.appendChild(this.fullscreenBtn);
   }
 
   /**
@@ -1658,7 +1949,7 @@ export class StableScene implements GameScene {
     // 跑步机训练中：松开按键后再按方向键才能离开
     if (this.currentTreadmill && this.currentTreadmill.isTraining) {
       const input = this.engine.input;
-      const hasInput = input.getAxis('horizontal') !== 0 || input.getAxis('vertical') !== 0;
+      const hasInput = input.getAxis('horizontal') !== 0 || input.getAxis('vertical') !== 0 || this.joystickActive;
 
       // 等玩家先松开所有按键
       if (!hasInput) {
@@ -1685,8 +1976,14 @@ export class StableScene implements GameScene {
     }
 
     const input = this.engine.input;
-    const inputX = input.getAxis('horizontal');  // A=-1, D=+1
-    const inputZ = input.getAxis('vertical');    // W=-1, S=+1
+    let inputX = input.getAxis('horizontal');  // A=-1, D=+1
+    let inputZ = input.getAxis('vertical');    // W=-1, S=+1
+
+    // 如果虚拟摇杆激活，使用摇杆输入
+    if (this.joystickActive) {
+      inputX = this.joystickInputX;
+      inputZ = this.joystickInputZ;
+    }
 
     if (inputX !== 0 || inputZ !== 0) {
       // 基于相机朝向计算世界空间移动方向
