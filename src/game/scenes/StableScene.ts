@@ -402,12 +402,12 @@ export class StableScene implements GameScene {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     if (!isMobile) return;
 
-    // 创建摇杆底座 - 调整位置避开底部按钮
+    // 创建摇杆底座 - 调整位置到底部按钮上方一点
     this.joystickBase = document.createElement('div');
     this.joystickBase.style.cssText = `
       position: fixed;
       left: 20px;
-      bottom: 120px;
+      bottom: 80px;
       width: 100px;
       height: 100px;
       background: rgba(255, 255, 255, 0.3);

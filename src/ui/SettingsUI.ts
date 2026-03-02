@@ -190,19 +190,30 @@ export class SettingsUI {
     });
 
     // 面板
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
     const panel = document.createElement('div');
     panel.style.cssText = `
       background: #FFF9E6; color: #333; border-radius: 20px;
-      padding: 24px 28px; width: 360px; max-width: 90vw;
+      padding: ${isMobile ? '16px 20px' : '24px 28px'}; 
+      width: ${isMobile ? '90vw' : '360px'}; 
+      max-width: 90vw;
+      max-height: ${isMobile ? '80vh' : 'none'};
+      overflow-y: ${isMobile ? 'auto' : 'visible'};
       border: 4px solid #000; box-shadow: 0 8px 0 #000;
       font-family: ${FONT};
     `;
 
     // 标题
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
     const title = document.createElement('div');
     title.innerHTML = '⚙ AI 设置';
     title.style.cssText = `
-      font-size: 22px; font-weight: 900; margin-bottom: 18px; color: #000;
+      font-size: ${isMobile ? '18px' : '22px'}; 
+      font-weight: 900; 
+      margin-bottom: ${isMobile ? '12px' : '18px'}; 
+      color: #000;
       text-shadow: 1px 1px 0 #ccc;
     `;
     panel.appendChild(title);
