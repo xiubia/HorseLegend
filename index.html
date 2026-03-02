@@ -41,35 +41,6 @@
       margin-bottom: 16px;
     }
     @keyframes rotate { to { transform: rotate(360deg); } }
-    
-    /* 横屏提示（仅移动端竖屏时显示） */
-    @media screen and (max-width: 768px) and (orientation: portrait) {
-      #orientation-hint {
-        display: flex !important;
-      }
-    }
-    #orientation-hint {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: #0a0a1a;
-      color: #fff;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 10000;
-      font-family: system-ui, -apple-system, sans-serif;
-    }
-    #orientation-hint svg {
-      width: 80px;
-      height: 80px;
-      margin-bottom: 20px;
-      animation: rotate-phone 1.5s ease-in-out infinite;
-    }
-    @keyframes rotate-phone {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(90deg); }
-    }
   </style>
 </head>
 <body>
@@ -79,17 +50,6 @@
       <div>Loading…</div>
     </div>
   </div>
-  
-  <!-- 横屏提示 -->
-  <div id="orientation-hint">
-    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3">
-      <rect x="20" y="30" width="60" height="40" rx="5" />
-      <circle cx="50" cy="50" r="3" fill="currentColor" />
-    </svg>
-    <div style="font-size: 18px; font-weight: bold;">请旋转设备至横屏</div>
-    <div style="font-size: 14px; color: #999; margin-top: 8px;">以获得最佳游戏体验</div>
-  </div>
-  
   <script type="module" src="/src/main.ts"></script>
 </body>
 </html>
