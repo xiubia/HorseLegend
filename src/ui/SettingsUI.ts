@@ -205,8 +205,6 @@ export class SettingsUI {
     `;
 
     // 标题
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
     const title = document.createElement('div');
     title.innerHTML = '⚙ AI 设置';
     title.style.cssText = `
