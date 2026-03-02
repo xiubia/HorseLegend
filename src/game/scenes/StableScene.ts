@@ -518,6 +518,10 @@ export class StableScene implements GameScene {
    * 创建全屏按钮
    */
   private createFullscreenButton(): void {
+    // 仅在移动设备显示全屏按钮
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (!isMobile) return;
+
     this.fullscreenBtn = document.createElement('button');
     this.fullscreenBtn.innerHTML = '⛶';
     this.fullscreenBtn.style.cssText = `
